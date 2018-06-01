@@ -17,6 +17,9 @@ RUN a2enmod rewrite
 COPY vhost.conf /etc/apache2/sites-enabled/000-default.conf
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
+# Laravel application
+RUN composer install
+
 WORKDIR /var/www/html
 
 EXPOSE 80
