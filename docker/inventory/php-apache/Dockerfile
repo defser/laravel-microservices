@@ -24,3 +24,5 @@ EXPOSE 80
 ENTRYPOINT ["entrypoint.sh"]
 
 CMD ["apache2-foreground"]
+
+CMD bash -c "composer install"

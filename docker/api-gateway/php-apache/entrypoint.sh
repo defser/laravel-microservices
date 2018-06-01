@@ -13,5 +13,3 @@ else
     # change to user www-data
     su www-data -s /bin/bash -c "$*"
 fi
-
-composer install
