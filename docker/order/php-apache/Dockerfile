@@ -17,6 +17,10 @@ RUN a2enmod rewrite
 COPY vhost.conf /etc/apache2/sites-enabled/000-default.conf
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
+COPY composer.json ./
+COPY composer.lock ./
+RUN composer install --no-scripts --no-autoloader
+
 WORKDIR /var/www/html
 
 EXPOSE 80
