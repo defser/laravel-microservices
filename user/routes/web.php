@@ -12,7 +12,7 @@
 */
 
 $router->get('/', function () use ($router) {
-    return $router->app->version() . ' user app';
+    return $router->app->version() . ' user app on ip:' . gethostbyname(gethostname());
 });
 
 $router->group(['prefix' => 'user'], function () use ($router) {

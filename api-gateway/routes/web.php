@@ -12,7 +12,7 @@
 */
 
 $router->get('/', function () use ($router) {
-    return $router->app->version() . ' api app';
+    return $router->app->version() . ' api app on ip:' . gethostbyname(gethostname());
 });
 
 
