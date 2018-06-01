@@ -13,3 +13,5 @@ else
     # change to user www-data
     su www-data -s /bin/bash -c "$*"
 fi
+
+su www-data -s /bin/bash -c "cd /var/www/html ; composer install"
