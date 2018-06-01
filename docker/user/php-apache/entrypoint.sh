@@ -6,6 +6,8 @@ set -e
 usermod -u `stat -c %u /var/www/html` www-data || true
 groupmod -g `stat -c %g /var/www/html` www-data || true
 
+( cd /var/www/html ; composer install )
+
 if [ "$1" = 'apache2-foreground' ]; then
     # let's start as root
     exec "$@"
@@ -13,5 +15,3 @@ else
     # change to user www-data
     su www-data -s /bin/bash -c "$*"
 fi
-
-( cd /var/www/html ; composer install )
