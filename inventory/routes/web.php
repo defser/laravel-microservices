@@ -12,7 +12,7 @@
 */
 
 $router->get('/', function () use ($router) {
-    return $router->app->version() . 'inventory app';
+    return $router->app->version() . ' inventory app';
 });
 
 

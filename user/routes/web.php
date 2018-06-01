@@ -12,7 +12,7 @@
 */
 
 $router->get('/', function () use ($router) {
-    return $router->app->version() . 'user app';
+    return $router->app->version() . ' user app';
 });
 
 $router->group(['prefix' => 'user'], function () use ($router) {
