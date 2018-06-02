@@ -35,6 +35,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:user.relephant.eu"
+      - "traefik.frontend.passHostHeader=true"
       - "traefik.backend=user"
     networks:
       - webgateway
