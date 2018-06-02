@@ -21,7 +21,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:order.relephant.eu"
-      - "traefik.docker.network=traefik_webgateway"
       - "traefik.backend=order"
     networks:
       - webgateway
@@ -36,7 +35,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:user.relephant.eu"
-      - "traefik.docker.network=traefik_webgateway"
       - "traefik.backend=user"
     networks:
       - webgateway
@@ -51,7 +49,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:inventory.relephant.eu"
-      - "traefik.docker.network=traefik_webgateway"
       - "traefik.backend=inventory"
     networks:
       - webgateway
@@ -66,7 +63,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:api.relephant.eu"
-      - "traefik.docker.network=traefik_webgateway"
       - "traefik.backend=api"
     networks:
       - webgateway
