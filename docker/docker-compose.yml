@@ -24,7 +24,6 @@ services:
       - "traefik.backend=order"
     networks:
       - webgateway
-      - web
     restart: always
 
   user:
@@ -35,11 +34,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:user.relephant.eu"
-      - "traefik.frontend.passHostHeader=true"
       - "traefik.backend=user"
     networks:
       - webgateway
-      - web
     restart: always
 
   inventory:
@@ -53,7 +50,6 @@ services:
       - "traefik.backend=inventory"
     networks:
       - webgateway
-      - web
     restart: always
 
   api:
@@ -67,7 +63,6 @@ services:
       - "traefik.backend=api"
     networks:
       - webgateway
-      - web
     restart: always
 
 networks:
