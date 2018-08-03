@@ -49,6 +49,9 @@ Scale
 ```
     # DEPRECATED
     docker-compose -f docker/docker-compose.yml scale ${container-name}
+    
+    # USE
+    docker-compose up -d --scale=service=num
 ```
 
 Access
@@ -56,21 +59,21 @@ Access
 You can access the applications from:
 ```
     #user
-    user.lm.dev
+    user.localhost
     
     #inventory
-    inventory.lm.dev
+    inventory.localhost
     
     #order
-    order.lm.dev
+    order.localhost
     
     #api gateway
-    api.dev
+    api.localhost
 ```
 
 You can access Traefik interface from:
 ```
-    lm.dev:8080
+    localhost:8080
 ```
 
 Isolate Web Services
