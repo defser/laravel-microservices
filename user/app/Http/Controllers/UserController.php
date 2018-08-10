@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -39,14 +39,18 @@ class UserController extends Controller
      */
     public function show(string $user): JsonResponse
     {
-        if (! $this->users->get($user)){
+        $result = $this->users->get($user);
+
+        if (! $result){
+            //TODO: REFACTOR TO REPOSITORY IN DOMAIN?
+            Log::warning(sprintf('User not found with ID: %s', $user));
             return new JsonResponse(
                 'User not found',
                 404
             );
         }
 
-        return new JsonResponse($this->users->get($user), 200);
+        return new JsonResponse($result, 200);
     }
 
 }
