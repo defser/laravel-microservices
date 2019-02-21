@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * Class UserHttpClient
  * @package App\Http\Clients
- * @author Chrysovalantis Koutsoumpos <chrysovalantis.koutsoumpos@devmob.com>
+ *
  */
 class UserHttpClient
 {

@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * Class OrderFactory
  * @package App\Http\Factories
- * @author Chrysovalantis Koutsoumpos <chrysovalantis.koutsoumpos@devmob.com>
+ *
  */
 class OrderFactory
 {

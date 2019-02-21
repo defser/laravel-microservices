@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * Class OrderHttpClient
  * @package App\Http\Clients
- * @author Chrysovalantis Koutsoumpos <chrysovalantis.koutsoumpos@devmob.com>
+ *
  */
 class OrderHttpClient
 {
