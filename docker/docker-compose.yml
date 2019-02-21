@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   proxy:
@@ -21,11 +21,17 @@ services:
       - ../order:/var/www/html
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:order.relephant.eu"
+      - "traefik.frontend.rule=Host:order.localhost"
       - "traefik.backend=order"
     networks:
       - webgateway
     restart: always
+    depends_on:
+      - "logstash"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://127.0.0.1:25826"
 
   user:
     build:
@@ -34,11 +40,17 @@ services:
       - ../user:/var/www/html
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:user.relephant.eu"
+      - "traefik.frontend.rule=Host:user.localhost"
       - "traefik.backend=user"
     networks:
       - webgateway
     restart: always
+    depends_on:
+      - "logstash"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://127.0.0.1:25826"
 
   inventory:
     build:
@@ -47,11 +59,17 @@ services:
       - ../inventory:/var/www/html
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:inventory.relephant.eu"
+      - "traefik.frontend.rule=Host:inventory.localhost"
       - "traefik.backend=inventory"
     networks:
       - webgateway
     restart: always
+    depends_on:
+      - "logstash"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://127.0.0.1:25826"
 
   api:
     build:
@@ -60,11 +78,66 @@ services:
       - ../api-gateway:/var/www/html
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:api.relephant.eu"
+      - "traefik.frontend.rule=Host:api.localhost"
       - "traefik.backend=api"
     networks:
       - webgateway
     restart: always
+    depends_on:
+      - "logstash"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://127.0.0.1:25826"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.9
+    ports:
+      - "9200:9200"
+    environment:
+      - "xpack.security.enabled=false"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    networks:
+      - webgateway
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.6.9
+    ports:
+      - "5601:5601"
+    environment:
+      - "xpack.security.enabled=false"
+    networks:
+      - webgateway
+    depends_on:
+      - elasticsearch
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:5.6.9
+    ports:
+      - "25826:25826"
+    volumes:
+      - ../elk-config:/elk-config
+    command: logstash -f /elk-config/logstash.config
+    networks:
+      - webgateway
+    depends_on:
+      - elasticsearch
+
+volumes:
+  esdata:
+    driver: local
 
 networks:
   webgateway:
