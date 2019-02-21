@@ -3,7 +3,7 @@ version: '3'
 services:
   proxy:
     image: traefik
-    command: --web --docker --docker.domain=relephant.eu --docker.exposedbydefault=false --logLevel=DEBUG
+    command: --web --docker --docker.domain=localhost --docker.exposedbydefault=false --logLevel=DEBUG
     networks:
       - webgateway
       - web
