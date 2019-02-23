@@ -21,6 +21,7 @@ services:
       context: order/php-apache
     volumes:
       - ../order:/var/www/html:delegated
+      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:order.localhost"
@@ -43,6 +44,7 @@ services:
       context: user/php-apache
     volumes:
       - ../user:/var/www/html:delegated
+      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:user.localhost"
@@ -65,6 +67,7 @@ services:
       context: inventory/php-apache
     volumes:
       - ../inventory:/var/www/html:delegated
+      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:inventory.localhost"
@@ -87,6 +90,7 @@ services:
       context: api-gateway/php-apache
     volumes:
       - ../api-gateway:/var/www/html:delegated
+      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:api.localhost"
