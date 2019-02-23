@@ -27,12 +27,6 @@ return [
     |
     */
     'channels' => [
-        'elk' => [
-            'driver' => 'custom',
-            'via' => App\Logging\GelfLogger::class,
-            'host' => 'logstash',
-            'port' => 12201,
-        ],
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],

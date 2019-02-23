@@ -3,8 +3,9 @@ set -e
 
 # Change www-data's uid & guid to be the same as directory in host
 # Fix cache problems
-usermod -u `stat -c %u /var/www` www-data || true
-groupmod -g `stat -c %g /var/www` www-data || true
+usermod -u `stat -c %u /var/www/html` www-data || true
+groupmod -g `stat -c %g /var/www/html` www-data || true
+usermod -m -d /var/www/html www-data
 
 ( cd /var/www/html ; composer install )
 

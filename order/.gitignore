@@ -1,2 +1,4 @@
 /.idea
 /vendor
+/.bash_history
+/.composer
