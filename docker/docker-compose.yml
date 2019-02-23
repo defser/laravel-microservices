@@ -11,14 +11,14 @@ services:
       - "80:80"
       - "8080:8080"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /dev/null:/traefik.toml
+      - /var/run/docker.sock:/var/run/docker.sock:delegated
+      - /dev/null:/traefik.toml:delegated
 
   order:
     build:
       context: order/php-apache
     volumes:
-      - ../order:/var/www/html
+      - ../order:/var/www/html:delegated
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:order.localhost"
@@ -27,17 +27,19 @@ services:
       - webgateway
     restart: always
     depends_on:
-      - "logstash"
+      - logstash
+    links:
+      - logstash:logstash
     logging:
-      driver: syslog
+      driver: gelf
       options:
-        syslog-address: "tcp://127.0.0.1:25826"
+        gelf-address: udp://localhost:12201
 
   user:
     build:
       context: user/php-apache
     volumes:
-      - ../user:/var/www/html
+      - ../user:/var/www/html:delegated
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:user.localhost"
@@ -46,17 +48,19 @@ services:
       - webgateway
     restart: always
     depends_on:
-      - "logstash"
+      - logstash
+    links:
+      - logstash:logstash
     logging:
-      driver: syslog
+      driver: gelf
       options:
-        syslog-address: "tcp://127.0.0.1:25826"
+        gelf-address: udp://localhost:12201
 
   inventory:
     build:
       context: inventory/php-apache
     volumes:
-      - ../inventory:/var/www/html
+      - ../inventory:/var/www/html:delegated
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:inventory.localhost"
@@ -65,17 +69,19 @@ services:
       - webgateway
     restart: always
     depends_on:
-      - "logstash"
+      - logstash
+    links:
+      - logstash:logstash
     logging:
-      driver: syslog
+      driver: gelf
       options:
-        syslog-address: "tcp://127.0.0.1:25826"
+        gelf-address: udp://localhost:12201
 
   api:
     build:
       context: api-gateway/php-apache
     volumes:
-      - ../api-gateway:/var/www/html
+      - ../api-gateway:/var/www/html:delegated
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:api.localhost"
@@ -84,11 +90,13 @@ services:
       - webgateway
     restart: always
     depends_on:
-      - "logstash"
+      - logstash
+    links:
+      - logstash:logstash
     logging:
-      driver: syslog
+      driver: gelf
       options:
-        syslog-address: "tcp://127.0.0.1:25826"
+        gelf-address: udp://localhost:12201
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.6.9
@@ -100,7 +108,7 @@ services:
     networks:
       - webgateway
     volumes:
-      - esdata:/usr/share/elasticsearch/data
+      - esdata:/usr/share/elasticsearch/data:delegated
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9200"]
       interval: 10s
@@ -117,6 +125,7 @@ services:
       - webgateway
     depends_on:
       - elasticsearch
+      - logstash
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5601"]
       interval: 10s
@@ -126,9 +135,10 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:5.6.9
     ports:
+      - "12201:12201/udp"
       - "25826:25826"
     volumes:
-      - ../elk-config:/elk-config
+      - ../elk-config:/elk-config:delegated
     command: logstash -f /elk-config/logstash.config
     networks:
       - webgateway

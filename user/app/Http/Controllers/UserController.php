@@ -42,7 +42,6 @@ class UserController extends Controller
         $result = $this->users->get($user);
 
         if (! $result){
-            //TODO: REFACTOR TO REPOSITORY IN DOMAIN?
             Log::warning(sprintf('User not found with ID: %s', $user));
             return new JsonResponse(
                 'User not found',
