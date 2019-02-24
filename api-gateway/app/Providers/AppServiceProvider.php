@@ -7,12 +7,7 @@ use Laravel\Tinker\TinkerServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
         $this->app->register(TinkerServiceProvider::class);
     }

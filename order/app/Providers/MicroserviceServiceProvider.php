@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
 
-class AuthServiceProvider extends ServiceProvider
+class MicroserviceServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
