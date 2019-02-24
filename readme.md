@@ -8,7 +8,7 @@ one API gateway `api-gateway`.
 The webservices are containerised with Docker and are accessible within a
 Traefik proxy interface. 
 
-`traefik` image is used for the proxy container and `php:7.1-apache` is used and extended
+`traefik` image is used for the proxy container and `php:7.2-apache` is used and extended
 for the web services containers & the API gateway
 
 The `api` is using the Guzzle API Client in order to maintain connection with the web services.
