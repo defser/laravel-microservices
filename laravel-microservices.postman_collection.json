@@ -1,0 +1,540 @@
+{
+	"info": {
+		"_postman_id": "e088a44e-2400-4cd1-8ee5-9a2e56aa00c6",
+		"name": "laravel-microservices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api-gateway",
+			"item": [
+				{
+					"name": "Laravel version with container ip Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c0d6a203-8f68-465d-afe0-7c795e9a08fb",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"});",
+									"pm.test(\"Response must contain container information\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"api app on ip\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api_gateway_host}}/",
+							"host": [
+								"{{api_gateway_host}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Root route of the api-gateway microservice"
+					},
+					"response": []
+				},
+				{
+					"name": "Get user orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5678138b-5ae4-466a-acc9-c7642c0de544",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"pm.test(\"Response must contain the test user\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[\"user\"][\"id\"]).to.eql(pm.environment.get(\"test_user_id\"));",
+									"    pm.expect(jsonData[\"user\"][\"name\"]).to.eql(\"User 1\");",
+									"});",
+									"pm.test(\"Response must contain the test order with test product\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[\"orders\"][pm.environment.get(\"test_order_id\")][pm.environment.get(\"test_product_id\")]).to.eql(\"Product 1\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{api_gateway_host}}/user/{{test_user_id}}/orders",
+							"host": [
+								"{{api_gateway_host}}"
+							],
+							"path": [
+								"user",
+								"{{test_user_id}}",
+								"orders"
+							]
+						},
+						"description": "Get all orders of the user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "inventory",
+			"item": [
+				{
+					"name": "Laravel version with container ip Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c0d6a203-8f68-465d-afe0-7c795e9a08fb",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"});",
+									"pm.test(\"Response must contain container information\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"inventory app on ip\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{inventory_host}}/",
+							"host": [
+								"{{inventory_host}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Root route of the inventory microservice"
+					},
+					"response": []
+				},
+				{
+					"name": "Get products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5678138b-5ae4-466a-acc9-c7642c0de544",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"pm.test(\"Response must contain the test product\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[pm.environment.get(\"test_product_id\")]).to.eql(\"Product 1\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{inventory_host}}/product/",
+							"host": [
+								"{{inventory_host}}"
+							],
+							"path": [
+								"product",
+								""
+							]
+						},
+						"description": "Get all the products"
+					},
+					"response": []
+				},
+				{
+					"name": "Get product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5678138b-5ae4-466a-acc9-c7642c0de544",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"pm.test(\"Response must contain the test product\", function () {",
+									"    var inventoryData = pm.response.text();",
+									"    pm.expect(inventoryData).to.include(\"Product 1\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{inventory_host}}/product/{{test_product_id}}",
+							"host": [
+								"{{inventory_host}}"
+							],
+							"path": [
+								"product",
+								"{{test_product_id}}"
+							]
+						},
+						"description": "Get the test product"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "Laravel version with container ip Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c0d6a203-8f68-465d-afe0-7c795e9a08fb",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"});",
+									"pm.test(\"Response must contain container information\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"inventory app on ip\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{inventory_host}}/",
+							"host": [
+								"{{inventory_host}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Root route of the order microservice"
+					},
+					"response": []
+				},
+				{
+					"name": "Get orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5678138b-5ae4-466a-acc9-c7642c0de544",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"pm.test(\"Response must contain the test order with test user\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[pm.environment.get(\"test_order_id\")][\"user\"]).to.eql(pm.environment.get(\"test_user_id\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{order_host}}/order/",
+							"host": [
+								"{{order_host}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						},
+						"description": "Get all the orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Get order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5678138b-5ae4-466a-acc9-c7642c0de544",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"pm.test(\"Response must contain the test order with test user\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[\"user\"]).to.eql(pm.environment.get(\"test_user_id\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{order_host}}/order/{{test_order_id}}",
+							"host": [
+								"{{order_host}}"
+							],
+							"path": [
+								"order",
+								"{{test_order_id}}"
+							]
+						},
+						"description": "Get the test order"
+					},
+					"response": []
+				},
+				{
+					"name": "Get user orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5678138b-5ae4-466a-acc9-c7642c0de544",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"pm.test(\"Response must contain the test order with test user\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[pm.environment.get(\"test_order_id\")][\"user\"]).to.eql(pm.environment.get(\"test_user_id\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{order_host}}/order/user/{{test_user_id}}",
+							"host": [
+								"{{order_host}}"
+							],
+							"path": [
+								"order",
+								"user",
+								"{{test_user_id}}"
+							]
+						},
+						"description": "Get all orders of the user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "Laravel version with container ip",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c0d6a203-8f68-465d-afe0-7c795e9a08fb",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"});",
+									"pm.test(\"Response must contain container information\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"user app on ip\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{user_host}}/",
+							"host": [
+								"{{user_host}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Root route of the user microservice"
+					},
+					"response": []
+				},
+				{
+					"name": "Get users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5678138b-5ae4-466a-acc9-c7642c0de544",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"pm.test(\"Response must contain the test user\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData[pm.environment.get(\"test_user_id\")]).to.eql(\"User 1\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{user_host}}/user/",
+							"host": [
+								"{{user_host}}"
+							],
+							"path": [
+								"user",
+								""
+							]
+						},
+						"description": "Get all the users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5678138b-5ae4-466a-acc9-c7642c0de544",
+								"exec": [
+									"pm.test(\"Response must be valid and have a body\", function () {",
+									"     pm.response.to.be.ok;",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"pm.test(\"Response must contain the test user\", function () {",
+									"    var userData = pm.response.text();",
+									"    pm.expect(userData).to.include(\"User 1\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{user_host}}/user/{{test_user_id}}",
+							"host": [
+								"{{user_host}}"
+							],
+							"path": [
+								"user",
+								"{{test_user_id}}"
+							]
+						},
+						"description": "Get all the users"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
