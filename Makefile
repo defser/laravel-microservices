@@ -7,6 +7,10 @@ ifndef container
     override container = microservice_api
 endif
 
+ifndef package
+    override package = ''
+endif
+
 help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
@@ -43,3 +47,9 @@ composer_update: ## Run composer update on containers
 	docker exec -it -u www-data microservice_inventory composer update
 	docker exec -it -u www-data microservice_order composer update
 	docker exec -it -u www-data microservice_user composer update
+
+composer_require: ## Run composer require on containers
+	docker exec -it -u www-data microservice_api composer require $(package)
+	docker exec -it -u www-data microservice_inventory composer require $(package)
+	docker exec -it -u www-data microservice_order composer require $(package)
+	docker exec -it -u www-data microservice_user composer require $(package)

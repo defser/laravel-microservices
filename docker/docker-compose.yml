@@ -33,6 +33,7 @@ services:
       - logstash
     links:
       - logstash:logstash
+      - blackfire:blackfire
     logging:
       driver: gelf
       options:
@@ -56,6 +57,7 @@ services:
       - logstash
     links:
       - logstash:logstash
+      - blackfire:blackfire
     logging:
       driver: gelf
       options:
@@ -79,6 +81,7 @@ services:
       - logstash
     links:
       - logstash:logstash
+      - blackfire:blackfire
     logging:
       driver: gelf
       options:
@@ -102,6 +105,7 @@ services:
       - logstash
     links:
       - logstash:logstash
+      - blackfire:blackfire
     logging:
       driver: gelf
       options:
@@ -186,6 +190,20 @@ services:
       - "${MYSQL_PORT}:3306"
     networks:
       - webgateway
+
+  blackfire:
+    container_name: blackfire
+    image: blackfire/blackfire
+    environment:
+      - BLACKFIRE_CLIENT_ID=${BLACKFIRE_CLIENT_ID}
+      - BLACKFIRE_CLIENT_TOKEN=${BLACKFIRE_CLIENT_TOKEN}
+      - BLACKFIRE_SERVER_ID=${BLACKFIRE_SERVER_ID}
+      - BLACKFIRE_SERVER_TOKEN=${BLACKFIRE_SERVER_TOKEN}
+    networks:
+      - webgateway
+      - web
+    ports:
+      - "8707:8707"
 
 volumes:
   esdata:
