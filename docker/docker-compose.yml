@@ -16,7 +16,6 @@ services:
       - /dev/null:/traefik.toml:delegated
 
   order:
-    container_name: microservice_order
     build:
       context: order/php-apache
     volumes:
@@ -40,7 +39,6 @@ services:
         gelf-address: udp://localhost:12201
 
   user:
-    container_name: microservice_user
     build:
       context: user/php-apache
     volumes:
@@ -64,7 +62,6 @@ services:
         gelf-address: udp://localhost:12201
 
   inventory:
-    container_name: microservice_inventory
     build:
       context: inventory/php-apache
     volumes:
@@ -88,7 +85,6 @@ services:
         gelf-address: udp://localhost:12201
 
   api:
-    container_name: microservice_api
     build:
       context: api-gateway/php-apache
     volumes:
@@ -113,7 +109,7 @@ services:
 
   elasticsearch:
     container_name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
     ports:
       - "9200:9200"
     environment:
@@ -131,7 +127,7 @@ services:
 
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:6.6.1
+    image: docker.elastic.co/kibana/kibana:6.6.2
     ports:
       - "5601:5601"
     environment:
@@ -149,7 +145,7 @@ services:
 
   logstash:
     container_name: logstash
-    image: docker.elastic.co/logstash/logstash:6.6.1
+    image: docker.elastic.co/logstash/logstash:6.6.2
     ports:
       - "12201:12201/udp"
       - "25826:25826"
@@ -159,6 +155,21 @@ services:
     networks:
       - webgateway
     depends_on:
+      - elasticsearch
+
+  metricbeat:
+    container_name: metricbeat
+    build:
+      context: metricbeat
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:delegated
+    networks:
+      - webgateway
+# The special filesystems /proc and /sys are only available if the host system is running Linux. Attempts to bind-mount these filesystems will fail on Windows and MacOS.
+#    command:
+#      - "-system.hostfs=/hostfs"
+    depends_on:
+      - kibana
       - elasticsearch
 
   redis:
