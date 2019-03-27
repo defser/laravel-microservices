@@ -4,7 +4,7 @@ services:
   proxy:
     container_name: proxy
     image: traefik:latest
-    command: --web --docker --docker.domain=localhost --docker.exposedbydefault=false --logLevel=DEBUG
+    command: --web --docker --docker.domain=relephant.eu --docker.exposedbydefault=false --logLevel=DEBUG
     networks:
       - webgateway
       - web
@@ -23,7 +23,7 @@ services:
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:order.localhost"
+      - "traefik.frontend.rule=Host:order.relephant.eu"
       - "traefik.backend=order"
     networks:
       - webgateway
@@ -46,7 +46,7 @@ services:
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:user.localhost"
+      - "traefik.frontend.rule=Host:user.relephant.eu"
       - "traefik.backend=user"
     networks:
       - webgateway
@@ -69,7 +69,7 @@ services:
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:inventory.localhost"
+      - "traefik.frontend.rule=Host:inventory.relephant.eu"
       - "traefik.backend=inventory"
     networks:
       - webgateway
@@ -92,7 +92,7 @@ services:
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:api.localhost"
+      - "traefik.frontend.rule=Host:api.relephant.eu"
       - "traefik.backend=api"
     networks:
       - webgateway
