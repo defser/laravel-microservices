@@ -1,20 +1,19 @@
-[
-  {
-    "_id": "da5b56b0-4e75-11e9-8289-13ba32fff2e9",
-    "_type": "dashboard",
-    "_source": {
-      "title": "Microservices dashboard",
-      "hits": 0,
-      "description": "",
-      "panelsJSON": "[{\"embeddableConfig\":{\"vis\":{\"colors\":{\"load time in ms\":\"#CCA300\"}}},\"gridData\":{\"x\":0,\"y\":0,\"w\":24,\"h\":10,\"i\":\"1\"},\"id\":\"48365be0-4e6b-11e9-8289-13ba32fff2e9\",\"panelIndex\":\"1\",\"type\":\"visualization\",\"version\":\"6.6.2\"},{\"embeddableConfig\":{\"vis\":{\"colors\":{\"load time in ms\":\"#890F02\"}}},\"gridData\":{\"x\":24,\"y\":0,\"w\":24,\"h\":10,\"i\":\"2\"},\"id\":\"8b8f2410-4e68-11e9-8289-13ba32fff2e9\",\"panelIndex\":\"2\",\"type\":\"visualization\",\"version\":\"6.6.2\"},{\"embeddableConfig\":{\"vis\":{\"colors\":{\"load time in ms\":\"#BA43A9\"}}},\"gridData\":{\"x\":0,\"y\":10,\"w\":24,\"h\":10,\"i\":\"3\"},\"id\":\"f2c0f240-4e67-11e9-8289-13ba32fff2e9\",\"panelIndex\":\"3\",\"type\":\"visualization\",\"version\":\"6.6.2\"},{\"embeddableConfig\":{\"vis\":{\"colors\":{\"load time in ms\":\"#584477\"}}},\"gridData\":{\"x\":24,\"y\":10,\"w\":24,\"h\":10,\"i\":\"4\"},\"id\":\"b2371370-4e68-11e9-8289-13ba32fff2e9\",\"panelIndex\":\"4\",\"type\":\"visualization\",\"version\":\"6.6.2\"},{\"embeddableConfig\":{},\"gridData\":{\"x\":0,\"y\":20,\"w\":24,\"h\":15,\"i\":\"7\"},\"id\":\"3ac2dba0-4f1f-11e9-abc1-018bc95a2717\",\"panelIndex\":\"7\",\"type\":\"visualization\",\"version\":\"6.6.2\"},{\"gridData\":{\"w\":24,\"h\":15,\"x\":24,\"y\":20,\"i\":\"8\"},\"version\":\"6.6.2\",\"panelIndex\":\"8\",\"type\":\"visualization\",\"id\":\"8f4eaff0-4f1f-11e9-abc1-018bc95a2717\",\"embeddableConfig\":{}}]",
-      "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
-      "version": 1,
-      "timeRestore": false,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
-      }
+[{
+  "_id": "da5b56b0-4e75-11e9-8289-13ba32fff2e9",
+  "_type": "dashboard",
+  "_source": {
+    "title": "Microservices dashboard",
+    "hits": 0,
+    "description": "",
+    "panelsJSON": "[{\"embeddableConfig\":{\"vis\":{\"colors\":{\"load time in ms\":\"#CCA300\"}}},\"gridData\":{\"x\":0,\"y\":0,\"w\":24,\"h\":10,\"i\":\"1\"},\"id\":\"48365be0-4e6b-11e9-8289-13ba32fff2e9\",\"panelIndex\":\"1\",\"type\":\"visualization\",\"version\":\"6.6.2\"},{\"embeddableConfig\":{\"vis\":{\"colors\":{\"load time in ms\":\"#890F02\"}}},\"gridData\":{\"x\":24,\"y\":0,\"w\":24,\"h\":10,\"i\":\"2\"},\"id\":\"8b8f2410-4e68-11e9-8289-13ba32fff2e9\",\"panelIndex\":\"2\",\"type\":\"visualization\",\"version\":\"6.6.2\"},{\"embeddableConfig\":{\"vis\":{\"colors\":{\"load time in ms\":\"#BA43A9\"}}},\"gridData\":{\"x\":0,\"y\":10,\"w\":24,\"h\":10,\"i\":\"3\"},\"id\":\"f2c0f240-4e67-11e9-8289-13ba32fff2e9\",\"panelIndex\":\"3\",\"type\":\"visualization\",\"version\":\"6.6.2\"},{\"embeddableConfig\":{\"vis\":{\"colors\":{\"load time in ms\":\"#584477\"}}},\"gridData\":{\"x\":24,\"y\":10,\"w\":24,\"h\":10,\"i\":\"4\"},\"id\":\"b2371370-4e68-11e9-8289-13ba32fff2e9\",\"panelIndex\":\"4\",\"type\":\"visualization\",\"version\":\"6.6.2\"},{\"embeddableConfig\":{},\"gridData\":{\"x\":0,\"y\":20,\"w\":24,\"h\":15,\"i\":\"7\"},\"id\":\"3ac2dba0-4f1f-11e9-abc1-018bc95a2717\",\"panelIndex\":\"7\",\"type\":\"visualization\",\"version\":\"6.6.2\"},{\"gridData\":{\"w\":24,\"h\":15,\"x\":24,\"y\":20,\"i\":\"8\"},\"version\":\"6.6.2\",\"panelIndex\":\"8\",\"type\":\"visualization\",\"id\":\"8f4eaff0-4f1f-11e9-abc1-018bc95a2717\",\"embeddableConfig\":{}}]",
+    "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
+    "version": 1,
+    "timeRestore": false,
+    "kibanaSavedObjectMeta": {
+      "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
     }
-  },
+  }
+},
   {
     "_id": "8b8f2410-4e68-11e9-8289-13ba32fff2e9",
     "_type": "visualization",
@@ -61,7 +60,7 @@
     "_id": "b2371370-4e68-11e9-8289-13ba32fff2e9",
     "_type": "visualization",
     "_source": {
-      "title": "[Microservice User] load time"
+      "title": "[Microservice User] load time",
       "visState": "{\"title\":\"[Microservice User] load time\",\"type\":\"area\",\"params\":{\"type\":\"area\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"load time in ms\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"area\",\"mode\":\"stacked\",\"data\":{\"label\":\"load time in ms\",\"id\":\"1\"},\"drawLinesBetweenPoints\":true,\"showCircles\":true,\"interpolate\":\"linear\",\"valueAxis\":\"ValueAxis-1\"}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"bottom\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"load_time\",\"customLabel\":\"load time in ms\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"timeRange\":{\"from\":\"now-15m\",\"to\":\"now\",\"mode\":\"quick\"},\"useNormalizedEsInterval\":true,\"interval\":\"auto\",\"time_zone\":\"Europe/Berlin\",\"drop_partials\":false,\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}}]}",
       "uiStateJSON": "{}",
       "description": "",
