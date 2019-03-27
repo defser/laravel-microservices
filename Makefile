@@ -4,7 +4,7 @@
 .PHONY: help build
 
 ifndef container
-    override container = microservice_api
+    override container = docker_api_1
 endif
 
 ifndef package
