@@ -37,19 +37,19 @@ login: ## Login to a container of the project
 	docker exec -it -u www-data $(container) bash
 
 composer_install: ## Run composer install on containers
-	docker exec -it -u www-data microservice_api composer install
-	docker exec -it -u www-data microservice_inventory composer install
-	docker exec -it -u www-data microservice_order composer install
-	docker exec -it -u www-data microservice_user composer install
+	docker exec -it -u www-data docker_api_1 composer install
+	docker exec -it -u www-data docker_inventory_1 composer install
+	docker exec -it -u www-data docker_order_1 composer install
+	docker exec -it -u www-data docker_user_1 composer install
 
 composer_update: ## Run composer update on containers
-	docker exec -it -u www-data microservice_api composer update
-	docker exec -it -u www-data microservice_inventory composer update
-	docker exec -it -u www-data microservice_order composer update
-	docker exec -it -u www-data microservice_user composer update
+	docker exec -it -u www-data docker_api_1 composer update
+	docker exec -it -u www-data docker_inventory_1 composer update
+	docker exec -it -u www-data docker_order_1 composer update
+	docker exec -it -u www-data docker_user_1 composer update
 
 composer_require: ## Run composer require on containers
-	docker exec -it -u www-data microservice_api composer require $(package)
-	docker exec -it -u www-data microservice_inventory composer require $(package)
-	docker exec -it -u www-data microservice_order composer require $(package)
-	docker exec -it -u www-data microservice_user composer require $(package)
+	docker exec -it -u www-data docker_api_1 composer require $(package)
+	docker exec -it -u www-data docker_inventory_1 composer require $(package)
+	docker exec -it -u www-data docker_order_1 composer require $(package)
+	docker exec -it -u www-data docker_user_1 composer require $(package)
