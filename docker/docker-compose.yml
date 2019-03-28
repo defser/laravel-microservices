@@ -162,10 +162,13 @@ services:
     build:
       context: metricbeat
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:delegated
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+# The special filesystems /proc and /sys are only available if the host system is running Linux. Attempts to bind-mount these filesystems will fail on Windows and MacOS.
+#      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+#      - /proc:/hostfs/proc:ro
+#      - /:/hostfs:ro
     networks:
       - webgateway
-# The special filesystems /proc and /sys are only available if the host system is running Linux. Attempts to bind-mount these filesystems will fail on Windows and MacOS.
 #    command:
 #      - "-system.hostfs=/hostfs"
     depends_on:
