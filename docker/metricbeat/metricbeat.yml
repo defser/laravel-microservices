@@ -29,6 +29,19 @@ metricbeat.modules:
       - memory
     hosts: ["unix:///var/run/docker.sock"]
 
+  - module: system
+    metricsets:
+      - cpu
+      - memory
+      - network
+      - diskio
+    enabled: true
+    period: 10s
+    processes: ['.*']
+
+    cpu.metrics:  ["percentages"]
+    core.metrics: ["percentages"]
+
 #============================== Kibana =====================================
 
 # Starting with Beats version 6.0.0, the dashboards are loaded via the Kibana API.
