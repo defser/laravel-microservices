@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-            $count = 7000000;
+            $count = 10000000;
 
             $time_start = microtime(true);
             $stringFunctions = array("addslashes", "chunk_split", "metaphone", "strip_tags", "md5", "sha1", "strtoupper", "strtolower", "strrev", "strlen", "soundex", "ord");
@@ -39,6 +39,6 @@ class Kernel extends ConsoleKernel
                 }
             }
             return number_format(microtime(true) - $time_start, 3);
-        })->everyMinute();
+        })->everyTenMinutes();
     }
 }
