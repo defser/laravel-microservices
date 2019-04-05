@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
         zip \
         libicu-dev \
         cron \
+        supervisor \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install pdo_mysql intl \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -18,8 +19,11 @@ RUN a2enmod rewrite
 COPY vhost.conf /etc/apache2/sites-enabled/000-default.conf
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-ADD crontab /var/spool/cron/crontabs/crontab
-RUN crontab /var/spool/cron/crontabs/crontab
+# Configure cron
+RUN crontab -l | { cat; echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1"; } | crontab -
+
+# Configure supervisor
+COPY config/supervisord.conf /etc/supervisor/supervisord.conf
 
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
@@ -34,5 +38,3 @@ WORKDIR /var/www/html
 EXPOSE 80
 
 ENTRYPOINT ["entrypoint.sh"]
-
-CMD ["apache2-foreground"]
