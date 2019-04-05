@@ -19,7 +19,6 @@ COPY vhost.conf /etc/apache2/sites-enabled/000-default.conf
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 ADD crontab /var/spool/cron/crontabs/crontab
-
 RUN crontab /var/spool/cron/crontabs/crontab
 
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
