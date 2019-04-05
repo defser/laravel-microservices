@@ -58,6 +58,6 @@ class Kernel extends ConsoleKernel
             );
 
             return $number;
-        })->everyMinute();
+        })->everyTenMinutes();
     }
 }
