@@ -39,5 +39,4 @@ EXPOSE 80
 
 ENTRYPOINT ["entrypoint.sh"]
 
-
 CMD ["/usr/bin/supervisord"]
