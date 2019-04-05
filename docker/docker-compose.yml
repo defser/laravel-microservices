@@ -110,6 +110,27 @@ services:
       options:
         gelf-address: udp://localhost:12201
 
+  api-schedule:
+    build:
+      context: api-gateway/php-apache
+    volumes:
+      - ../api-gateway:/var/www/html:delegated
+      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+    environment:
+      APP_ENV: local
+      CONTAINER_ROLE: scheduler
+    networks:
+      - webgateway
+    restart: always
+    depends_on:
+      - logstash
+    links:
+      - logstash:logstash
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://localhost:12201
+
   elasticsearch:
     container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
