@@ -23,7 +23,7 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN crontab -l | { cat; echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1"; } | crontab -
 
 # Configure supervisor
-COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY supervisord.conf /etc/supervisord/supervisord.conf
 
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
@@ -38,3 +38,5 @@ WORKDIR /var/www/html
 EXPOSE 80
 
 ENTRYPOINT ["entrypoint.sh"]
+
+CMD ["/usr/local/bin/supervisord", "-c", "/etc/supervisord/supervisord.conf"]
