@@ -25,6 +25,8 @@ RUN crontab -l | { cat; echo "* * * * * cd /var/www/html && php artisan schedule
 # Configure supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+RUN chmod 777 -R /var/log/supervisor/
+
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
     && mkdir -p /tmp/blackfire \
