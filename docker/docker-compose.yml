@@ -90,6 +90,9 @@ services:
     volumes:
       - ../api-gateway:/var/www/html:delegated
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+    environment:
+      APP_ENV: local
+      CONTAINER_ROLE: app
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:api.relephant.eu"
