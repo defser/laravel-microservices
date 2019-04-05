@@ -19,7 +19,8 @@ RUN a2enmod rewrite
 COPY vhost.conf /etc/apache2/sites-enabled/000-default.conf
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-RUN crontab -l > schedule \
+RUN crontab -e \
+    && crontab -l > schedule \
     && echo "* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1" >> schedule \
     && crontab schedule \
     && rm schedule
