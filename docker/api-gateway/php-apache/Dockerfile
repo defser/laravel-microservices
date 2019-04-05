@@ -16,6 +16,7 @@ COPY php.ini /usr/local/etc/php/
 RUN a2enmod rewrite
 COPY vhost.conf /etc/apache2/sites-enabled/000-default.conf
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod a+x /usr/local/bin/entrypoint.sh
 
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
