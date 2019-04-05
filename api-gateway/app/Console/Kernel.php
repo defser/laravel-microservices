@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -25,6 +26,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
+            Log::info(
+                sprintf(
+                    '[%f] Command started: %s',
+                    microtime(true),
+                    'CPU FLOODER'
+                )
+            );
+
             $count = 10000000;
 
             $time_start = microtime(true);
@@ -38,7 +47,17 @@ class Kernel extends ConsoleKernel
                     $r = call_user_func_array($function, array($string));
                 }
             }
-            return number_format(microtime(true) - $time_start, 3);
+            $number = number_format(microtime(true) - $time_start, 3);
+
+            Log::info(
+                sprintf(
+                    '[%f] Command ended: %s',
+                    microtime(true),
+                    'CPU FLOODER'
+                )
+            );
+
+            return $number;
         })->everyTenMinutes();
     }
 }
