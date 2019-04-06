@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
                 )
             );
 
-            $count = 20000000;
+            $count = 10000000;
 
             $time_start = microtime(true);
             $stringFunctions = array("addslashes", "chunk_split", "metaphone", "strip_tags", "md5", "sha1", "strtoupper", "strtolower", "strrev", "strlen", "soundex", "ord");
@@ -69,7 +69,7 @@ class Kernel extends ConsoleKernel
                 )
             );
 
-            $count = 5000000;
+            $count = 1000000;
 
             $time_start = microtime(true);
             $stringFunctions = array("addslashes", "chunk_split", "metaphone", "strip_tags", "md5", "sha1", "strtoupper", "strtolower", "strrev", "strlen", "soundex", "ord");
