@@ -58,7 +58,7 @@ class Kernel extends ConsoleKernel
             );
 
             return $number;
-        })->everyFiveMinutes();
+        })->everyFiveMinutes()->withoutOverlapping();
 
         $schedule->call(function () {
             Log::info(
@@ -93,7 +93,7 @@ class Kernel extends ConsoleKernel
             );
 
             return $number;
-        })->everyMinute();
+        })->everyMinute()->withoutOverlapping();
 
         $schedule->call(function () {
             Log::info(
@@ -116,6 +116,6 @@ class Kernel extends ConsoleKernel
                     'MEMORY FLOODER'
                 )
             );
-        })->everyTenMinutes();
+        })->everyTenMinutes()->withoutOverlapping();
     }
 }
