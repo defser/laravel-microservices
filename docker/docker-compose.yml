@@ -3,8 +3,8 @@ version: '3'
 services:
   proxy:
     container_name: proxy
-    image: traefik:latest
-    command: --web --docker --docker.domain=relephant.eu --docker.exposedbydefault=false --logLevel=DEBUG
+    image: traefik:1.7
+    command: --web --docker --docker.domain=localhost --docker.exposedbydefault=false --logLevel=DEBUG
     networks:
       - webgateway
       - web
@@ -23,7 +23,7 @@ services:
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:order.relephant.eu"
+      - "traefik.frontend.rule=Host:order.localhost"
       - "traefik.backend=order"
     networks:
       - webgateway
@@ -32,11 +32,6 @@ services:
       - logstash
     links:
       - logstash:logstash
-      - blackfire:blackfire
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
 
   user:
     build:
@@ -46,7 +41,7 @@ services:
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:user.relephant.eu"
+      - "traefik.frontend.rule=Host:user.localhost"
       - "traefik.backend=user"
     networks:
       - webgateway
@@ -55,11 +50,6 @@ services:
       - logstash
     links:
       - logstash:logstash
-      - blackfire:blackfire
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
 
   inventory:
     build:
@@ -69,7 +59,7 @@ services:
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:inventory.relephant.eu"
+      - "traefik.frontend.rule=Host:inventory.localhost"
       - "traefik.backend=inventory"
     networks:
       - webgateway
@@ -78,11 +68,6 @@ services:
       - logstash
     links:
       - logstash:logstash
-      - blackfire:blackfire
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
 
   api:
     build:
@@ -95,7 +80,7 @@ services:
       CONTAINER_ROLE: app
     labels:
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:api.relephant.eu"
+      - "traefik.frontend.rule=Host:api.localhost"
       - "traefik.backend=api"
     networks:
       - webgateway
@@ -104,11 +89,6 @@ services:
       - logstash
     links:
       - logstash:logstash
-      - blackfire:blackfire
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
 
   api-schedule:
     build:
@@ -126,10 +106,6 @@ services:
       - logstash
     links:
       - logstash:logstash
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
 
   elasticsearch:
     container_name: elasticsearch
@@ -175,6 +151,10 @@ services:
       - "25826:25826"
     volumes:
       - ../elk-config:/elk-config:delegated
+      - ../api-gateway/storage/logs:/logs/api-gateway:delegated
+      - ../inventory/storage/logs:/logs/inventory:delegated
+      - ../order/storage/logs:/logs/order:delegated
+      - ../user/storage/logs:/logs/user:delegated
     command: logstash -f /elk-config/logstash.config
     networks:
       - webgateway
@@ -229,19 +209,19 @@ services:
     networks:
       - webgateway
 
-  blackfire:
-    container_name: blackfire
-    image: blackfire/blackfire
-    environment:
-      - BLACKFIRE_CLIENT_ID=${BLACKFIRE_CLIENT_ID}
-      - BLACKFIRE_CLIENT_TOKEN=${BLACKFIRE_CLIENT_TOKEN}
-      - BLACKFIRE_SERVER_ID=${BLACKFIRE_SERVER_ID}
-      - BLACKFIRE_SERVER_TOKEN=${BLACKFIRE_SERVER_TOKEN}
-    networks:
-      - webgateway
-      - web
-    ports:
-      - "8707:8707"
+#  blackfire:
+#    container_name: blackfire
+#    image: blackfire/blackfire
+#    environment:
+#      - BLACKFIRE_CLIENT_ID=${BLACKFIRE_CLIENT_ID}
+#      - BLACKFIRE_CLIENT_TOKEN=${BLACKFIRE_CLIENT_TOKEN}
+#      - BLACKFIRE_SERVER_ID=${BLACKFIRE_SERVER_ID}
+#      - BLACKFIRE_SERVER_TOKEN=${BLACKFIRE_SERVER_TOKEN}
+#    networks:
+#      - webgateway
+#      - web
+#    ports:
+#      - "8707:8707"
 
 volumes:
   esdata:
