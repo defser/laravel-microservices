@@ -1,15 +1,14 @@
-version: '3'
+version: "3.7"
 
 services:
-  proxy:
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:delegated
-      - /dev/null:/traefik.toml:delegated
-
   order:
     volumes:
       - ../order:/var/www/html:delegated
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app_order.rule=Host(`order.localhost`)"
+      - "traefik.http.routers.app_order.entrypoints=web"
     depends_on:
       - logstash
     links:
@@ -19,6 +18,10 @@ services:
     volumes:
       - ../user:/var/www/html:delegated
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app_user.rule=Host(`user.localhost`)"
+      - "traefik.http.routers.app_user.entrypoints=web"
     depends_on:
       - logstash
     links:
@@ -28,6 +31,10 @@ services:
     volumes:
       - ../inventory:/var/www/html:delegated
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app_inventory.rule=Host(`inventory.localhost`)"
+      - "traefik.http.routers.app_inventory.entrypoints=web"
     depends_on:
       - logstash
     links:
@@ -37,6 +44,10 @@ services:
     volumes:
       - ../api-gateway:/var/www/html:delegated
       - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app_api.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.app_api.entrypoints=web"
     depends_on:
       - logstash
     links:
@@ -59,8 +70,6 @@ services:
     environment:
       - "xpack.security.enabled=false"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    networks:
-      - webgateway
     volumes:
       - ${DATA_PATH_HOST}/esdata:/usr/share/elasticsearch/data:delegated
     healthcheck:
@@ -76,8 +85,6 @@ services:
       - "5601:5601"
     environment:
       - "xpack.security.enabled=false"
-    networks:
-      - webgateway
     depends_on:
       - elasticsearch
       - logstash
@@ -100,8 +107,6 @@ services:
       - ../order/storage/logs:/logs/order:delegated
       - ../user/storage/logs:/logs/user:delegated
     command: logstash -f /elk-config/logstash.config
-    networks:
-      - webgateway
     depends_on:
       - elasticsearch
 
@@ -111,8 +116,6 @@ services:
       context: metricbeat
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - webgateway
     depends_on:
       - kibana
       - elasticsearch
@@ -123,8 +126,6 @@ services:
       context: redis
     ports:
       - "${REDIS_PORT}:6379"
-    networks:
-      - webgateway
     volumes:
       - ${DATA_PATH_HOST}/redis:/data:delegated
 
@@ -141,8 +142,6 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     ports:
       - "${MYSQL_PORT}:3306"
-    networks:
-      - webgateway
     volumes:
       - ${DATA_PATH_HOST}/mysql:/var/lib/mysql:delegated
       - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d:cached

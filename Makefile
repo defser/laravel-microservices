@@ -8,7 +8,7 @@ ifndef AWS_ECS
 endif
 
 ifndef version
-    override version = 0.0.1-alpha1
+    override version = 0.0.1-alpha2
 endif
 
 ifndef container
@@ -34,12 +34,12 @@ build: ## Build the container
 # Deploy the containers
 deploy: ## Deploy the project
 	if [ ! -f docker/.env ]; then cp docker/.env.example docker/.env; fi
-	cd docker; docker-compose -f docker-compose.yml build --build-arg VERSION=$(version) --no-cache
-	docker tag relephant-api:$(version) $(AWS_ECS)/relephant-api:$(version)
-	docker tag relephant-api-schedule:$(version) $(AWS_ECS)/relephant-api-schedule:$(version)
-	docker tag relephant-inventory:$(version) $(AWS_ECS)/relephant-inventory:$(version)
-	docker tag relephant-order:$(version) $(AWS_ECS)/relephant-order:$(version)
-	docker tag relephant-user:$(version) $(AWS_ECS)/relephant-user:$(version)
+	cd docker; docker-compose -f docker-compose.yml build --build-arg VERSION=$(version)
+	docker tag $(AWS_ECS)/relephant-api:$(version) $(AWS_ECS)/relephant-api:$(version)
+	docker tag $(AWS_ECS)/relephant-api-schedule:$(version) $(AWS_ECS)/relephant-api-schedule:$(version)
+	docker tag $(AWS_ECS)/relephant-inventory:$(version) $(AWS_ECS)/relephant-inventory:$(version)
+	docker tag $(AWS_ECS)/relephant-order:$(version) $(AWS_ECS)/relephant-order:$(version)
+	docker tag $(AWS_ECS)/relephant-user:$(version) $(AWS_ECS)/relephant-user:$(version)
 	docker push $(AWS_ECS)/relephant-api:$(version)
 	docker push $(AWS_ECS)/relephant-api-schedule:$(version)
 	docker push $(AWS_ECS)/relephant-inventory:$(version)

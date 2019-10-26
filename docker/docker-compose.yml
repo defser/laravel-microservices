@@ -1,87 +1,109 @@
-version: '3'
+version: "3.7"
 
 services:
   proxy:
-    container_name: proxy
-    image: traefik:1.7
-    command: --web --docker --docker.domain=localhost --docker.exposedbydefault=false --logLevel=DEBUG
+    image: traefik:v2.0
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.swarmMode=true"
+      - "--providers.docker.network=webgateway"
+      - "--providers.docker.exposedbydefault=true"
+      - "--entrypoints.web.address=:80"
     networks:
       - webgateway
       - web
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     ports:
       - "80:80"
       - "8080:8080"
 
   order:
-    image: relephant-order:${VERSION}
+    image: 555658144160.dkr.ecr.eu-central-1.amazonaws.com/relephant-order:${VERSION}
     build:
       context: ../order/
       dockerfile: deploy/Dockerfile
-    labels:
-      - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:order.localhost"
-      - "traefik.backend=order"
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+      labels:
+        - traefik.http.routers.order.rule=Host(`order.relephant.eu`)
+        - traefik.http.services.order-service.loadbalancer.server.port=80
     networks:
       - webgateway
     restart: always
 
   user:
-    image: relephant-user:${VERSION}
+    image: 555658144160.dkr.ecr.eu-central-1.amazonaws.com/relephant-user:${VERSION}
     build:
       context: ../user/
       dockerfile: deploy/Dockerfile
-    labels:
-      - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:user.localhost"
-      - "traefik.backend=user"
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+      labels:
+        - traefik.http.routers.user.rule=Host(`user.relephant.eu`)
+        - traefik.http.services.user-service.loadbalancer.server.port=80
     networks:
       - webgateway
     restart: always
 
   inventory:
-    image: relephant-inventory:${VERSION}
+    image: 555658144160.dkr.ecr.eu-central-1.amazonaws.com/relephant-inventory:${VERSION}
     build:
       context: ../inventory/
       dockerfile: deploy/Dockerfile
-    labels:
-      - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:inventory.localhost"
-      - "traefik.backend=inventory"
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+      labels:
+        - traefik.http.routers.inventory.rule=Host(`inventory.relephant.eu`)
+        - traefik.http.services.inventory-service.loadbalancer.server.port=80
     networks:
       - webgateway
     restart: always
 
   api:
-    image: relephant-api:${VERSION}
+    image: 555658144160.dkr.ecr.eu-central-1.amazonaws.com/relephant-api:${VERSION}
     build:
       context: ../api-gateway/
       dockerfile: deploy/Dockerfile
     environment:
       APP_ENV: ${ENVIRONMENT}
       CONTAINER_ROLE: app
-    labels:
-      - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:api.localhost"
-      - "traefik.backend=api"
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+      labels:
+        - traefik.http.routers.api.rule=Host(`api.relephant.eu`)
+        - traefik.http.services.api-service.loadbalancer.server.port=80
     networks:
       - webgateway
     restart: always
 
   api-schedule:
-    image: relephant-api-schedule:${VERSION}
+    image: 555658144160.dkr.ecr.eu-central-1.amazonaws.com/relephant-api-schedule:${VERSION}
     build:
       context: ../api-gateway/
       dockerfile: deploy/Dockerfile
     environment:
       APP_ENV: ${ENVIRONMENT}
       CONTAINER_ROLE: scheduler
+    deploy:
+      placement:
+        constraints: [node.role == worker]
     networks:
       - webgateway
     restart: always
 
 networks:
   webgateway:
-    driver: bridge
+    driver: overlay
   web:
     external:
       name: traefik_webgateway
