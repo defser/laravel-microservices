@@ -11,16 +11,12 @@ services:
     ports:
       - "80:80"
       - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:delegated
-      - /dev/null:/traefik.toml:delegated
 
   order:
+    image: relephant-order:${VERSION}
     build:
-      context: order/php-apache
-    volumes:
-      - ../order:/var/www/html:delegated
-      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+      context: ../order/
+      dockerfile: deploy/Dockerfile
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:order.localhost"
@@ -28,17 +24,12 @@ services:
     networks:
       - webgateway
     restart: always
-    depends_on:
-      - logstash
-    links:
-      - logstash:logstash
 
   user:
+    image: relephant-user:${VERSION}
     build:
-      context: user/php-apache
-    volumes:
-      - ../user:/var/www/html:delegated
-      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+      context: ../user/
+      dockerfile: deploy/Dockerfile
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:user.localhost"
@@ -46,17 +37,12 @@ services:
     networks:
       - webgateway
     restart: always
-    depends_on:
-      - logstash
-    links:
-      - logstash:logstash
 
   inventory:
+    image: relephant-inventory:${VERSION}
     build:
-      context: inventory/php-apache
-    volumes:
-      - ../inventory:/var/www/html:delegated
-      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+      context: ../inventory/
+      dockerfile: deploy/Dockerfile
     labels:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:inventory.localhost"
@@ -64,19 +50,14 @@ services:
     networks:
       - webgateway
     restart: always
-    depends_on:
-      - logstash
-    links:
-      - logstash:logstash
 
   api:
+    image: relephant-api:${VERSION}
     build:
-      context: api-gateway/php-apache
-    volumes:
-      - ../api-gateway:/var/www/html:delegated
-      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+      context: ../api-gateway/
+      dockerfile: deploy/Dockerfile
     environment:
-      APP_ENV: local
+      APP_ENV: ${ENVIRONMENT}
       CONTAINER_ROLE: app
     labels:
       - "traefik.enable=true"
@@ -85,147 +66,18 @@ services:
     networks:
       - webgateway
     restart: always
-    depends_on:
-      - logstash
-    links:
-      - logstash:logstash
 
   api-schedule:
+    image: relephant-api-schedule:${VERSION}
     build:
-      context: api-gateway/php-apache
-    volumes:
-      - ../api-gateway:/var/www/html:delegated
-      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+      context: ../api-gateway/
+      dockerfile: deploy/Dockerfile
     environment:
-      APP_ENV: local
+      APP_ENV: ${ENVIRONMENT}
       CONTAINER_ROLE: scheduler
     networks:
       - webgateway
     restart: always
-    depends_on:
-      - logstash
-    links:
-      - logstash:logstash
-
-  elasticsearch:
-    container_name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
-    ports:
-      - "9200:9200"
-    environment:
-      - "xpack.security.enabled=false"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    networks:
-      - webgateway
-    volumes:
-      - ${DATA_PATH_HOST}/esdata:/usr/share/elasticsearch/data:delegated
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9200"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
-  kibana:
-    container_name: kibana
-    image: docker.elastic.co/kibana/kibana:6.6.2
-    ports:
-      - "5601:5601"
-    environment:
-      - "xpack.security.enabled=false"
-    networks:
-      - webgateway
-    depends_on:
-      - elasticsearch
-      - logstash
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5601"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
-  logstash:
-    container_name: logstash
-    image: docker.elastic.co/logstash/logstash:6.6.2
-    ports:
-      - "12201:12201/udp"
-      - "25826:25826"
-    volumes:
-      - ../elk-config:/elk-config:delegated
-      - ../api-gateway/storage/logs:/logs/api-gateway:delegated
-      - ../inventory/storage/logs:/logs/inventory:delegated
-      - ../order/storage/logs:/logs/order:delegated
-      - ../user/storage/logs:/logs/user:delegated
-    command: logstash -f /elk-config/logstash.config
-    networks:
-      - webgateway
-    depends_on:
-      - elasticsearch
-
-  metricbeat:
-    container_name: metricbeat
-    build:
-      context: metricbeat
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-# The special filesystems /proc and /sys are only available if the host system is running Linux. Attempts to bind-mount these filesystems will fail on Windows and MacOS.
-#      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
-#      - /proc:/hostfs/proc:ro
-#      - /:/hostfs:ro
-    networks:
-      - webgateway
-#    command:
-#      - "-system.hostfs=/hostfs"
-    depends_on:
-      - kibana
-      - elasticsearch
-
-  redis:
-    container_name: redis
-    build:
-      context: redis
-    volumes:
-      - ${DATA_PATH_HOST}/redis:/data:delegated
-    ports:
-      - "${REDIS_PORT}:6379"
-    networks:
-      - webgateway
-
-  mysql:
-    container_name: mysql
-    build:
-      context: ./mysql
-      args:
-        - MYSQL_VERSION=${MYSQL_VERSION}
-    environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    volumes:
-      - ${DATA_PATH_HOST}/mysql:/var/lib/mysql:delegated
-      - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d:cached
-    ports:
-      - "${MYSQL_PORT}:3306"
-    networks:
-      - webgateway
-
-#  blackfire:
-#    container_name: blackfire
-#    image: blackfire/blackfire
-#    environment:
-#      - BLACKFIRE_CLIENT_ID=${BLACKFIRE_CLIENT_ID}
-#      - BLACKFIRE_CLIENT_TOKEN=${BLACKFIRE_CLIENT_TOKEN}
-#      - BLACKFIRE_SERVER_ID=${BLACKFIRE_SERVER_ID}
-#      - BLACKFIRE_SERVER_TOKEN=${BLACKFIRE_SERVER_TOKEN}
-#    networks:
-#      - webgateway
-#      - web
-#    ports:
-#      - "8707:8707"
-
-volumes:
-  esdata:
-    driver: local
 
 networks:
   webgateway:

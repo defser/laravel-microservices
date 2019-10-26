@@ -3,6 +3,14 @@
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help build
 
+ifndef AWS_ECS
+    override AWS_ECS = 555658144160.dkr.ecr.eu-central-1.amazonaws.com
+endif
+
+ifndef version
+    override version = 0.0.1-alpha1
+endif
+
 ifndef container
     override container = docker_api_1
 endif
@@ -23,7 +31,22 @@ build: ## Build the container
 	cd docker; docker-compose build --no-cache
 	cd docker; docker-compose up -d --force-recreate
 
-# Build and run the container
+# Deploy the containers
+deploy: ## Deploy the project
+	if [ ! -f docker/.env ]; then cp docker/.env.example docker/.env; fi
+	cd docker; docker-compose -f docker-compose.yml build --build-arg VERSION=$(version) --no-cache
+	docker tag relephant-api:$(version) $(AWS_ECS)/relephant-api:$(version)
+	docker tag relephant-api-schedule:$(version) $(AWS_ECS)/relephant-api-schedule:$(version)
+	docker tag relephant-inventory:$(version) $(AWS_ECS)/relephant-inventory:$(version)
+	docker tag relephant-order:$(version) $(AWS_ECS)/relephant-order:$(version)
+	docker tag relephant-user:$(version) $(AWS_ECS)/relephant-user:$(version)
+	docker push $(AWS_ECS)/relephant-api:$(version)
+	docker push $(AWS_ECS)/relephant-api-schedule:$(version)
+	docker push $(AWS_ECS)/relephant-inventory:$(version)
+	docker push $(AWS_ECS)/relephant-order:$(version)
+	docker push $(AWS_ECS)/relephant-user:$(version)
+
+# Build and run the containers
 up: ## Spin up the project
 	cd docker; docker-compose up -d --force-recreate
 

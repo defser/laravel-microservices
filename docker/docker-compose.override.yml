@@ -1,0 +1,159 @@
+version: '3'
+
+services:
+  proxy:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:delegated
+      - /dev/null:/traefik.toml:delegated
+
+  order:
+    volumes:
+      - ../order:/var/www/html:delegated
+      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+    depends_on:
+      - logstash
+    links:
+      - logstash:logstash
+
+  user:
+    volumes:
+      - ../user:/var/www/html:delegated
+      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+    depends_on:
+      - logstash
+    links:
+      - logstash:logstash
+
+  inventory:
+    volumes:
+      - ../inventory:/var/www/html:delegated
+      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+    depends_on:
+      - logstash
+    links:
+      - logstash:logstash
+
+  api:
+    volumes:
+      - ../api-gateway:/var/www/html:delegated
+      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+    depends_on:
+      - logstash
+    links:
+      - logstash:logstash
+
+  api-schedule:
+    volumes:
+      - ../api-gateway:/var/www/html:delegated
+      - ${DATA_PATH_HOST}/.composer:/var/www/.composer:cached
+    depends_on:
+      - logstash
+    links:
+      - logstash:logstash
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    ports:
+      - "9200:9200"
+    environment:
+      - "xpack.security.enabled=false"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    networks:
+      - webgateway
+    volumes:
+      - ${DATA_PATH_HOST}/esdata:/usr/share/elasticsearch/data:delegated
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:6.6.2
+    ports:
+      - "5601:5601"
+    environment:
+      - "xpack.security.enabled=false"
+    networks:
+      - webgateway
+    depends_on:
+      - elasticsearch
+      - logstash
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  logstash:
+    container_name: logstash
+    image: docker.elastic.co/logstash/logstash:6.6.2
+    ports:
+      - "12201:12201/udp"
+      - "25826:25826"
+    volumes:
+      - ../elk-config:/elk-config:delegated
+      - ../api-gateway/storage/logs:/logs/api-gateway:delegated
+      - ../inventory/storage/logs:/logs/inventory:delegated
+      - ../order/storage/logs:/logs/order:delegated
+      - ../user/storage/logs:/logs/user:delegated
+    command: logstash -f /elk-config/logstash.config
+    networks:
+      - webgateway
+    depends_on:
+      - elasticsearch
+
+  metricbeat:
+    container_name: metricbeat
+    build:
+      context: metricbeat
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - webgateway
+    depends_on:
+      - kibana
+      - elasticsearch
+
+  redis:
+    container_name: redis
+    build:
+      context: redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - webgateway
+    volumes:
+      - ${DATA_PATH_HOST}/redis:/data:delegated
+
+  mysql:
+    container_name: mysql
+    build:
+      context: ./mysql
+      args:
+        - MYSQL_VERSION=${MYSQL_VERSION}
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      - webgateway
+    volumes:
+      - ${DATA_PATH_HOST}/mysql:/var/lib/mysql:delegated
+      - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d:cached
+
+volumes:
+  esdata:
+    driver: local
+
+networks:
+  webgateway:
+    driver: bridge
+  web:
+    external:
+      name: traefik_webgateway

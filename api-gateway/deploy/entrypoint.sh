@@ -10,7 +10,7 @@ groupmod -g `stat -c %g /var/www/html` www-data || true
 
 ( cd /var/www/html ; composer install )
 
-if [ "$env" != "local" ]; then
+if [ "$env" != "development" ]; then
     echo "Caching configuration..."
     (cd /var/www/html && php artisan config:cache && php artisan route:cache && php artisan view:cache)
 fi
