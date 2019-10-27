@@ -4,13 +4,18 @@ services:
   proxy:
     image: traefik:v2.0
     command:
-      - "--log.level=DEBUG"
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.swarmMode=true"
-      - "--providers.docker.network=webgateway"
-      - "--providers.docker.exposedbydefault=true"
-      - "--entrypoints.web.address=:80"
+      - --log.level=DEBUG
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.swarmMode=true
+      - --providers.docker.network=webgateway
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.httpchallenge.acme.httpchallenge=true
+      - --certificatesresolvers.httpchallenge.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.httpchallenge.acme.email=info@relephant.eu
+      - --certificatesresolvers.httpchallenge.acme.storage=/letsencrypt/acme.json
     networks:
       - webgateway
       - web
@@ -18,10 +23,12 @@ services:
       placement:
         constraints: [node.role == manager]
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - /home/docker/letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-      - "80:80"
-      - "8080:8080"
+      - 80:80
+      - 443:443
+      - 8080:8080
 
   order:
     image: 555658144160.dkr.ecr.eu-central-1.amazonaws.com/relephant-order:${VERSION}
@@ -32,7 +39,14 @@ services:
       placement:
         constraints: [node.role == worker]
       labels:
+        - traefik.enable=true
+        - traefik.http.routers.order_insecure.entrypoints=web
+        - traefik.http.routers.order_insecure.rule=Host(`order.relephant.eu`)
+        - traefik.http.middlewares.order_https_redirect.redirectscheme.scheme=https
+        - traefik.http.routers.order_insecure.middlewares=order_https_redirect@docker
+        - traefik.http.routers.order.entrypoints=websecure
         - traefik.http.routers.order.rule=Host(`order.relephant.eu`)
+        - traefik.http.routers.order.tls.certresolver=httpchallenge
         - traefik.http.services.order-service.loadbalancer.server.port=80
     networks:
       - webgateway
@@ -47,7 +61,14 @@ services:
       placement:
         constraints: [node.role == worker]
       labels:
+        - traefik.enable=true
+        - traefik.http.routers.user_insecure.entrypoints=web
+        - traefik.http.routers.user_insecure.rule=Host(`user.relephant.eu`)
+        - traefik.http.middlewares.user_https_redirect.redirectscheme.scheme=https
+        - traefik.http.routers.user_insecure.middlewares=user_https_redirect@docker
+        - traefik.http.routers.user.entrypoints=websecure
         - traefik.http.routers.user.rule=Host(`user.relephant.eu`)
+        - traefik.http.routers.user.tls.certresolver=httpchallenge
         - traefik.http.services.user-service.loadbalancer.server.port=80
     networks:
       - webgateway
@@ -62,7 +83,14 @@ services:
       placement:
         constraints: [node.role == worker]
       labels:
+        - traefik.enable=true
+        - traefik.http.routers.inventory_insecure.entrypoints=web
+        - traefik.http.routers.inventory_insecure.rule=Host(`inventory.relephant.eu`)
+        - traefik.http.middlewares.inventory_https_redirect.redirectscheme.scheme=https
+        - traefik.http.routers.inventory_insecure.middlewares=inventory_https_redirect@docker
+        - traefik.http.routers.inventory.entrypoints=websecure
         - traefik.http.routers.inventory.rule=Host(`inventory.relephant.eu`)
+        - traefik.http.routers.inventory.tls.certresolver=httpchallenge
         - traefik.http.services.inventory-service.loadbalancer.server.port=80
     networks:
       - webgateway
@@ -80,7 +108,14 @@ services:
       placement:
         constraints: [node.role == worker]
       labels:
+        - traefik.enable=true
+        - traefik.http.routers.api_insecure.entrypoints=web
+        - traefik.http.routers.api_insecure.rule=Host(`api.relephant.eu`)
+        - traefik.http.middlewares.api_https_redirect.redirectscheme.scheme=https
+        - traefik.http.routers.api_insecure.middlewares=api_https_redirect@docker
+        - traefik.http.routers.api.entrypoints=websecure
         - traefik.http.routers.api.rule=Host(`api.relephant.eu`)
+        - traefik.http.routers.api.tls.certresolver=httpchallenge
         - traefik.http.services.api-service.loadbalancer.server.port=80
     networks:
       - webgateway
