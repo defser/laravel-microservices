@@ -3,10 +3,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Factories\OrderFactory;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserController extends Controller
 {
+    private const USER_ORDER_REMEMBER = 1;
+
     /**
      * @param string $user
      * @return JsonResponse
@@ -16,7 +19,9 @@ class UserController extends Controller
     public function orders(string $user): JsonResponse
     {
         try {
-            $data = (new OrderFactory())->retrieveUserOrders($user);
+            $data = Cache::remember('user.' . $user . '.orders', self::USER_ORDER_REMEMBER, function () use ($user) {
+                return (new OrderFactory())->retrieveUserOrders($user);
+            });
         }catch (HttpException $exception) {
             return new JsonResponse(
                 $exception->getMessage(),
