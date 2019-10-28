@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserController extends Controller
 {
-    private const USER_ORDER_REMEMBER = 1;
+    private const USER_ORDER_REMEMBER = 60;
 
     /**
      * @param string $user
